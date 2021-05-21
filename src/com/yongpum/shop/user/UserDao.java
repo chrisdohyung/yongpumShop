@@ -2,6 +2,7 @@ package com.yongpum.shop.user;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -68,6 +69,38 @@ public class UserDao {
 			}
 		}
 		return updateRowCount;
+	}
+	
+	public User findUser(String userId) throws Exception {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		User findUser = null;
+		
+		try {
+			con = dataSource.getConnection();
+			pstmt = con.prepareStatement(UserSQL.USER_SELECT_BY_ID);
+			pstmt.setString(1, userId);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				findUser = new User(
+						rs.getString("userId"),
+						rs.getString("password"),
+						rs.getString("name"),
+						rs.getString("email"));
+			}
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			if (con != null) {
+				con.close();
+			}
+		}
+		return findUser;
 	}
 
 }
