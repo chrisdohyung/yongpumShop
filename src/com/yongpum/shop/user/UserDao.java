@@ -36,9 +36,21 @@ public class UserDao {
 			pstmt.setString(4,  user.getEmail());
 			insertRowCount = pstmt.executeUpdate();
 			return insertRowCount;
-		} catch (Exception e) {
-			// TODO: handle exception
+		} finally {
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			if (con != null) {
+				con.close();
+			}
 		}
+	}
+	
+	public int update(User user) throws Exception {
+		
+		int updateRowCount = 0;
+		
+		return updateRowCount;
 	}
 
 }
