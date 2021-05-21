@@ -14,11 +14,11 @@ public class UserDao {
 	public UserDao() throws Exception {
 		Properties properties = new Properties();
 		properties.load(this.getClass().getResourceAsStream("/com/yongpum/shop/db.properties"));
-		BasicDataSource basicDatasource = new BasicDataSource();
-		basicDatasource.setDriverClassName(properties.getProperty("driverClass"));
-		basicDatasource.setUrl(properties.getProperty("url"));
-		basicDatasource.setUserName(properties.getProperty("user"));
-		basicDatasource.setPassword(properties.getProperty("password"));
+		BasicDataSource basicDataSource = new BasicDataSource();
+		basicDataSource.setDriverClassName(properties.getProperty("driverClass"));
+		basicDataSource.setUrl(properties.getProperty("url"));
+		basicDataSource.setUsername(properties.getProperty("user"));
+		basicDataSource.setPassword(properties.getProperty("password"));
 		dataSource = basicDataSource;
 	}
 	
@@ -47,9 +47,26 @@ public class UserDao {
 	}
 	
 	public int update(User user) throws Exception {
-		
+		Connection con = null;
+		PreparedStatement pstmt = null;
 		int updateRowCount = 0;
 		
+		try {
+			con = dataSource.getConnection();
+			pstmt = con.prepareStatement(UserSQL.USER_UPDATE);
+			pstmt.setString(1, user.getUserId());
+			pstmt.setString(2, user.getPassword());
+			pstmt.setString(3, user.getName());
+			pstmt.setString(4, user.getEmail());
+			updateRowCount = pstmt.executeUpdate();
+		} finally {
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			if (con != null) {
+				con.close();
+			}
+		}
 		return updateRowCount;
 	}
 
