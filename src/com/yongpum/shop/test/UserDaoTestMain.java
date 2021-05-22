@@ -8,7 +8,5 @@ public class UserDaoTestMain {
 		
 		UserDao userDao = new UserDao();
 		System.out.println(userDao.findUserList());
-		
 	}
-
 }
