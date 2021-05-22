@@ -1,5 +1,7 @@
 package com.yongpum.shop.user;
 
+import java.util.ArrayList;
+
 import com.yongpum.shop.user.exception.*;
 
 public class UserService {
@@ -24,6 +26,23 @@ public class UserService {
 			throw new PasswordMismatchException("your password is not matched.");
 		}
 		return user;
+	}
+	
+	public ArrayList<User> findUserList() throws Exception {
+		return userDao.findUserList();
+	}
+	
+	public User findUser(String userId) throws Exception {
+		User findUser = userDao.findUser(userId);
+		return findUser;
+	}
+	
+	public int update(User user) throws Exception {
+		return userDao.update(user);
+	}
+	
+	public int remove(String userId) throws Exception {
+		return userDao.remove(userId);
 	}
 
 }

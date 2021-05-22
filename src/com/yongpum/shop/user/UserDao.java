@@ -72,6 +72,26 @@ public class UserDao {
 		return updateRowCount;
 	}
 	
+	public int remove(String userId) throws Exception {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		int removeRowCount = 0;
+		try {
+			con = dataSource.getConnection();
+			pstmt = con.prepareStatement(UserSQL.USER_REMOVE);
+			pstmt.setString(1, userId);
+			removeRowCount = pstmt.executeUpdate();
+		} finally {
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			if (con != null) {
+				con.close();
+			}
+		}
+		return removeRowCount;
+	}
+	
 	public User findUser(String userId) throws Exception {
 		Connection con = null;
 		PreparedStatement pstmt = null;
