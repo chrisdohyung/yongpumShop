@@ -3,6 +3,7 @@ package com.yongpum.shop.user;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -101,6 +102,69 @@ public class UserDao {
 			}
 		}
 		return findUser;
+	}
+	
+	public ArrayList<User> findUserList() throws Exception {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<User> findUserList = new ArrayList<>();
+		
+		try {
+			con = dataSource.getConnection();
+			pstmt = con.prepareStatement(UserSQL.USER_SELECT_ALL);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				findUserList.add(new User(
+						rs.getString("userId"),
+						rs.getString("password"),
+						rs.getString("name"),
+						rs.getString("email")));
+			}
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			if (con != null) {
+				con.close();
+			}
+		}
+		return findUserList;
+		
+	}
+	
+	public boolean existedUser(String userId) throws Exception {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		boolean isExist = false;
+		
+		try {
+			con = dataSource.getConnection();
+			pstmt = con.prepareStatement(UserSQL.USER_SELECT_BY_ID_COUNT);
+			pstmt.setString(1, userId);
+			rs = pstmt.executeQuery();
+			rs.next();
+			int count = rs.getInt("cnt");
+			if (count == 1) {
+				isExist = true;
+			}
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			if (con != null) {
+				con.close();
+			}
+		}
+		return isExist;
+		
 	}
 
 }
