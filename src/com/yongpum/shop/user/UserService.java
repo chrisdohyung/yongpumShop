@@ -1,6 +1,6 @@
 package com.yongpum.shop.user;
 
-import com.yongpum.shop.user.exception.ExistedUserException;
+import com.yongpum.shop.user.exception.*;
 
 public class UserService {
 	private UserDao userDao;
@@ -18,7 +18,10 @@ public class UserService {
 	public User login(String userId, String password) throws Exception {
 		User user = userDao.findUser(userId);
 		if (user == null) {
-			throw new UserNotFoundException()userId +" your id is not existed";
+			throw new UserNotFoundException(userId +" your id is not existed");
+		}
+		if (!user.isMatchPassword(password)) {
+			throw new PasswordMismatchException("your password is not matched.");
 		}
 		return user;
 	}

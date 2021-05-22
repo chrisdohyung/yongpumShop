@@ -55,6 +55,12 @@ public class User {
 		return "User [userId=" + userId + ", password=" + password + ", name=" + name + ", email=" + email + "]";
 	}
 	
-	
+	public boolean isMatchPassword(String password) {
+		boolean isMatch = false;
+		if (this.password.equals(password)) {
+			isMatch = true;
+		}
+		return isMatch;
+	}
 
 }
