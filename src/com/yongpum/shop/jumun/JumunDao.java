@@ -148,9 +148,5 @@ public class JumunDao {
 		}
 		return jumun;
 	}
-	
-	
-	
-	
 
 }
