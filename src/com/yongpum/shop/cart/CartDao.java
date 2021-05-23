@@ -3,11 +3,15 @@ package com.yongpum.shop.cart;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+
+import com.yongpum.shop.product.Product;
+import com.yongpum.shop.user.User;
 
 public class CartDao {
 	private DataSource dataSource;
@@ -51,6 +55,113 @@ public class CartDao {
 		}
 		
 		return isExist;
+	}
+	
+	public int add(String sUserId, int p_no, int cart_qty) throws Exception {
+		String insertSql = "insert into cart(cart_no,userId,p_no,cart_qty) values(cart_cart_no_SEQ.nextval,?,?,?)";
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		int insertRowCount = 0;
+		try {
+			con = dataSource.getConnection();
+			pstmt = con.prepareStatement(insertSql);
+			pstmt.setString(1, sUserId);
+			pstmt.setInt(2, p_no);
+			pstmt.setInt(3, cart_qty);
+			insertRowCount = pstmt.executeUpdate();
+		} finally {
+			if (con != null) {
+				con.close();
+			}
+		}
+		return insertRowCount;
+	}
+	
+	public int update(String sUserId, int p_no, int cart_qty) throws Exception {
+		String updateSql = "update cart set cart_qty = cart_qty+? where userid = ? and p_no = ?";
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		int rowCount = 0;
+		try {
+			con = dataSource.getConnection();
+			pstmt = con.prepareStatement(updateSql);
+			pstmt.setInt(1, cart_qty);
+			pstmt.setString(2, sUserId);
+			pstmt.setInt(3, p_no);
+			rowCount = pstmt.executeUpdate();
+		} finally {
+			if (con != null) {
+				con.close();
+			}
+		}
+		return rowCount;
+	}
+	
+	public ArrayList<Cart> getCartList(String sUserId) throws Exception {
+		ArrayList<Cart> cartList = new ArrayList<>();
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String selectSql = "select * from cart c join userinfo u on c.userid = u.userid"
+				+ "join product p on p.p_no = c.p_no"
+				+ "where u.userid = ?";
+		try {
+			con = dataSource.getConnection();
+			pstmt = con.prepareStatement(selectSql);
+			pstmt.setString(1, sUserId);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				cartList.add(new Cart(rs.getInt("cart_no"),
+						new User(),
+						new Product(rs.getInt("p_no"),
+								rs.getString("p_name"),
+								rs.getInt("p_price"),
+								rs.getString("p_image"),
+								null,0),
+						rs.getInt("cart_qty")));
+			}
+		} finally {
+			if (con != null) {
+				con.close();
+			}
+		}
+		return cartList;
+	}
+	
+	public int deleteCartByNo(int cart_no) throws Exception {
+		String deleteSql = "delete from cart where cart_no = ?";
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		int deleteRowCount = 0;
+		try {
+			con = dataSource.getConnection();
+			pstmt = con.prepareStatement(deleteSql);
+			pstmt.setInt(1, cart_no);
+			deleteRowCount = pstmt.executeUpdate();
+		} finally {
+			if (con != null) {
+				con.close();
+			}
+		}
+		return deleteRowCount;
+	}
+	
+	public int deleteCart(String sUserId) throws Exception {
+		String deleteSql = "delete from cart where userid = ?";
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		int deleteRowCount = 0;
+		try {
+			con = dataSource.getConnection();
+			pstmt = con.prepareStatement(deleteSql);
+			pstmt.setString(1, sUserId);
+			deleteRowCount = pstmt.executeUpdate();
+		} finally {
+			if (con != null) {
+				con.close();
+			}
+		}
+		return deleteRowCount;
 	}
 
 }
