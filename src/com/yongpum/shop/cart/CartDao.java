@@ -31,7 +31,7 @@ public class CartDao {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String selectSql = "select count(*) as p_count from cart c join userinfo u on c.userid = u.userid where u.userid = ? and c.p_no = ?";
+		String selectSql = "select count(*) as p_count from cart c join userinfo u on c.userid=u.userid where u.userid=? and c.p_no=?";
 		try {
 			con = dataSource.getConnection();
 			pstmt = con.prepareStatement(selectSql);
@@ -58,7 +58,7 @@ public class CartDao {
 	}
 	
 	public int add(String sUserId, int p_no, int cart_qty) throws Exception {
-		String insertSql = "insert into cart(cart_no,userId,p_no,cart_qty) values(cart_cart_no_SEQ.nextval,?,?,?)";
+		String insertSql = "insert into cart(cart_no,userid,p_no,cart_qty) values(cart_cart_no_SEQ.nextval,?,?,?)";
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		int insertRowCount = 0;
@@ -78,7 +78,7 @@ public class CartDao {
 	}
 	
 	public int update(String sUserId, int p_no, int cart_qty) throws Exception {
-		String updateSql = "update cart set cart_qty = cart_qty+? where userid = ? and p_no = ?";
+		String updateSql = "update cart set cart_qty=cart_qty+? where userid=? and p_no=?";
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		int rowCount = 0;
@@ -102,9 +102,9 @@ public class CartDao {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		String selectSql = "select * from cart c join userinfo u on c.userid = u.userid"
-				+ "join product p on p.p_no = c.p_no"
-				+ "where u.userid = ?";
+		String selectSql = "select * from cart c join userinfo u on c.userid=u.userid"
+				+ "join product p on p.p_no=c.p_no"
+				+ "where u.userid=?";
 		try {
 			con = dataSource.getConnection();
 			pstmt = con.prepareStatement(selectSql);
@@ -129,7 +129,7 @@ public class CartDao {
 	}
 	
 	public int deleteCartByNo(int cart_no) throws Exception {
-		String deleteSql = "delete from cart where cart_no = ?";
+		String deleteSql = "delete from cart where cart_no=?";
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		int deleteRowCount = 0;
@@ -147,7 +147,7 @@ public class CartDao {
 	}
 	
 	public int deleteCart(String sUserId) throws Exception {
-		String deleteSql = "delete from cart where userid = ?";
+		String deleteSql = "delete from cart where userid=?";
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		int deleteRowCount = 0;
